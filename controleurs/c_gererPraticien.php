@@ -39,15 +39,6 @@
 			avoir le nom et le prénom du nouveau praticien
 			l'insérer dans la table praticien
 
-		Gérer la recherche de praticien
-		Si c'est un envoie de la recherche alors
-			retourner la liste des praticiens comportant la chaine envoyée dans leurs nom ou prénom
-		Sinon si c'est un envoie de choix de praticien (pour voir sa liste de visiteurs potentiels)
-			Afficher dans une vue la liste des visiteurs susceptibles d'aller le voir (donc des visiteurs de la même région)
-			Afficher dans une autre vue les dates de dernieres visites pour ce praticien
-		Sinon si c'est un envoie de choix de praticien (pour voir sa liste de visiteurs)
-			Afficher dans une vue la liste des visiteurs
-
 		Au niveau des vues 
 			la vue d'ajout des praticiens : comporte un nom et un prénom
 			La vue de modification des praticiens pour une affectation affichera
