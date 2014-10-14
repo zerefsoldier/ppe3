@@ -80,11 +80,13 @@ class PdoGsb{
 	public function recherchePersonne($nom){
 		$req = null;
 		if ($_SESSION["responsable"] == "non")
-			$req = self::$monPdo->query("SELECT nom, prenom FROM praticien WHERE nom LIKE '%".htmlentities($nom, ENT_IGNORE)."%' OR prenom LIKE '%".htmlentities($nom, ENT_IGNORE)."%'");
+			$req = self::$monPdo->prepare("SELECT nom, prenom FROM praticien WHERE nom LIKE :NOM OR prenom LIKE :PRENOM");
 		else
-			$req = self::$monPdo->query("SELECT nom, prenom FROM visiteur WHERE nom LIKE '%".htmlentities($nom, ENT_IGNORE)."%' OR prenom LIKE '%".htmlentities($nom, ENT_IGNORE)."%'");
-		$res = $req->fetchAll(PDO::FETCH_ASSOC);
-		return $res;
+			$req = self::$monPdo->prepare("SELECT nom, prenom FROM visiteur WHERE nom LIKE :NOM OR prenom LIKE :PRENOM");
+		$req->execute(array(
+		":NOM" => "%".$chaineRecherche."%",
+		":PRENOM" => "%".$chaineRecherche."%"));
+		return $req->fetchAll(PDO::FETCH_ASSOC);
 	}
 
 /**
@@ -99,8 +101,11 @@ class PdoGsb{
 		if ($_SESSION["responsable"] == "non")
 			$req = self::$monPdo->query("SELECT visiteur.nom, visiteur.prenom, visite.dateVisite, visite.commentaire FROM affectation aff, visiteur, visite WHERE aff.code = visite.codeAffectation AND aff.idPraticien = (SELECT id FROM praticien WHERE nom = :NOM AND prenom = :PRENOM) AND aff.idVisiteur = visiteur.id");
 		else
-			$req = self::$monPdo->query("SELECT ")//finir le code
-	}
+			$req = self::$monPdo->prepare("SELECT praticien.nom, praticien.prenom, visite.dateVisite, visite.commentaire FROM affectation aff, praticien, visite WHERE aff.code = visite.codeAffectation AND aff.idPraticien = praticien.id AND aff.idVisiteur = (SELECT id FROM visiteur WHERE nom = :NOM AND prenom = :PRENOM)");
+		$req->execute(array(
+		":NOM" => trim($nom),
+		":PRENOM" => trim($prenom)));
+		return $req->fetchAll(PDO::FETCH_ASSOC);
 
 /**
 * Retourne les liste des affectations 
